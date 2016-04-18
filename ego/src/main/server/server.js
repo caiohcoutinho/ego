@@ -1,17 +1,24 @@
 var express = require('express');
 var app = express();
-//var MongoClient = require('mongodb').MongoClient;
-//var assert = require('assert');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/ego');
 
-/*
-var url = 'mongodb://localhost:27017/ego';
-MongoClient.connect(url, function(err, db) {
-  assert.equal(null, err);
-  console.log("Connected correctly to server.");
-  db.close();
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log("connected");
 });
-*/
+
+var fieldSchema = mongoose.Schema({
+    points: [{
+        temperature: Number,
+        food: Number,
+        rock: Number
+    }]
+});
+
+var Field = mongoose.model("Field", fieldSchema);
 
 app.use(express.static('src/main'));
 app.use(express.static('lib'));
